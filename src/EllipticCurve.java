@@ -30,5 +30,11 @@ public class EllipticCurve {
 	public BigInteger getP() {
 		return p;
 	}
-
+	
+	@Override
+	public String toString() {
+		return "y^2 = x^3 + ax + b(mod p) \na: " + a + "\n" +
+				"b: " + b.toString(16) + "\n" +
+						"p: " + p;
+	}
 }

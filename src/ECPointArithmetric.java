@@ -1,8 +1,5 @@
 import java.math.BigInteger;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import sun.security.util.Length;
-
 
 public class ECPointArithmetric {
 	
@@ -11,7 +8,6 @@ public class ECPointArithmetric {
 	private BigInteger y;
 	
 	private BigInteger zero = BigInteger.ZERO;
-	private BigInteger one = BigInteger.ONE;
 	
 	
 	public ECPointArithmetric(EllipticCurve ec, BigInteger x, BigInteger y) {
@@ -36,7 +32,7 @@ public class ECPointArithmetric {
 		BigInteger diffY = other.getY().subtract(y);
 		BigInteger diffX = other.getX().subtract(x);
 		
-		BigInteger delta = diffY.divide(diffX);
+		BigInteger delta = diffY.multiply(inverse(diffX)).mod(ec.getP());
 		
 		BigInteger xres = delta.multiply(delta).subtract(x).subtract(other.getX()).mod(ec.getP());
 		BigInteger yres = delta.multiply(x.subtract(xres)).subtract(y).mod(ec.getP());
@@ -61,7 +57,7 @@ public class ECPointArithmetric {
 		BigInteger u = x2.add(a2x).add(ec.getB());
 		
 		/* need to find inverse here */
-		BigInteger delta = u.divide(y2);
+		BigInteger delta = u.multiply(inverse(y2)).mod(ec.getP());
 		
 		
 		BigInteger x3 = delta.pow(2).subtract(ec.getA()).subtract(x.multiply(TWO)).mod(ec.getP());		
@@ -96,5 +92,14 @@ public class ECPointArithmetric {
 		
 	}
 	
+	public BigInteger inverse(BigInteger a) {
+		return a.modPow(ec.getP(), ec.getP());
+	}
 	
+	@Override
+	public String toString() {
+		String s = "Elliptic curve: " + ec + "\n\n"+
+			"x: " + x.toString(16) + "\ny: " + y.toString(16); 
+		return s;
+	}
 }
