@@ -32,7 +32,9 @@ public class ECPointArithmetric {
 		BigInteger diffY = other.getY().subtract(y);
 		BigInteger diffX = other.getX().subtract(x);
 		
-		BigInteger delta = diffY.multiply(inverse(diffX)).mod(ec.getP());
+		
+		BigInteger delta = diffY.multiply(primeInverse(diffX)).mod(ec.getP());
+		
 		
 		BigInteger xres = delta.multiply(delta).subtract(x).subtract(other.getX()).mod(ec.getP());
 		BigInteger yres = delta.multiply(x.subtract(xres)).subtract(y).mod(ec.getP());
@@ -49,18 +51,20 @@ public class ECPointArithmetric {
 		
 		/* 3x^2 */
 		BigInteger x2 = x.pow(2).multiply(THREE);
-		/* 2ax */
-		BigInteger a2x = x.multiply(ec.getA()).multiply(TWO);
-		
+	
 		BigInteger y2 = y.multiply(TWO);
+	
+		BigInteger u = x2.add(ec.getA());
+	
 		
-		BigInteger u = x2.add(a2x).add(ec.getB());
+		System.out.println("inverse: " + primeInverse(y2));
+		
 		
 		/* need to find inverse here */
-		BigInteger delta = u.multiply(inverse(y2)).mod(ec.getP());
+		BigInteger delta = u.multiply(primeInverse(y2)).mod(ec.getP());
 		
 		
-		BigInteger x3 = delta.pow(2).subtract(ec.getA()).subtract(x.multiply(TWO)).mod(ec.getP());		
+		BigInteger x3 = delta.pow(2).subtract(x.multiply(TWO)).mod(ec.getP());		
 		BigInteger y3 = delta.multiply(x.subtract(x3)).subtract(y).mod(ec.getP());		
 		
 		return new ECPointArithmetric(ec, x3, y3);
@@ -92,14 +96,33 @@ public class ECPointArithmetric {
 		
 	}
 	
-	public BigInteger inverse(BigInteger a) {
-		return a.modPow(ec.getP(), ec.getP());
+	public BigInteger primeInverse(BigInteger a) {
+		
+		return modExp(a, ec.getP().subtract(new BigInteger("2")), ec.getP());
+		
 	}
 	
 	@Override
 	public String toString() {
+/*		String s = "Elliptic curve: " + ec + "\n\n"+
+		"x: " + x.toString(16) + "\ny: " + y.toString(16); 
+	*/
 		String s = "Elliptic curve: " + ec + "\n\n"+
-			"x: " + x.toString(16) + "\ny: " + y.toString(16); 
+		"x: " + x.toString(10) + "\ny: " + y.toString(10); 
+		return s;
+	}
+	
+	public BigInteger modExp(BigInteger x, BigInteger pow, BigInteger mod) {	
+		BigInteger s = BigInteger.ONE;
+		char[] binary = pow.toString(2).toCharArray();
+		
+		for (int i = 0; i < binary.length; i++) {
+			s = s.multiply(s).mod(mod);
+			if (binary[i] == '1'){
+				s = s.multiply(x).mod(mod);
+			}
+		}
+		
 		return s;
 	}
 }
