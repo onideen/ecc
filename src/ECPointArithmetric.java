@@ -57,9 +57,6 @@ public class ECPointArithmetric {
 		BigInteger u = x2.add(ec.getA());
 	
 		
-		System.out.println("inverse: " + primeInverse(y2));
-		
-		
 		/* need to find inverse here */
 		BigInteger delta = u.multiply(primeInverse(y2)).mod(ec.getP());
 		
@@ -73,7 +70,7 @@ public class ECPointArithmetric {
 	
 	/**
 	 * 
-	 * @param d binary string
+	 * @param
 	 * @return
 	 */
 	public ECPointArithmetric multiply(BigInteger k) {
