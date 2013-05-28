@@ -15,7 +15,6 @@ public class EllipticCurve {
 		this.b = b;
 		this.p = p;
 		
-		
 	}
 	
 	

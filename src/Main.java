@@ -20,9 +20,17 @@ public class Main {
 			long t1 = System.nanoTime();
 			ECPointArithmetric ecpa = ecc.getGenerator().multiply(d);
 			long t2 = System.nanoTime();
+			//System.out.println(ecpa);			
+			
+			long tp1 = System.nanoTime();
+			ECPointArithmetric ecppa = ecc.getGenerator().projectMultiply(d);
+			long tp2 = System.nanoTime();
+			//System.out.println(ecppa);
 			
 			System.out.println(d_percentes[i] + "% of " + ecc.getOrder().bitLength() + "\ntime: " + (t2 - t1)/1000000 + "ms");
-		
+			
+			System.out.println(d_percentes[i] + "% of " + ecc.getOrder().bitLength() + "\ntime: " + (tp2 - tp1)/1000000 + "ms");
+			
 		}
 		
 	}
